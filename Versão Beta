@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assistente Virtual - Revendedora Nátalia</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #dadada;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .whatsapp-container {
+            width: 100%;
+            max-width: 450px;
+            height: 100vh;
+            max-height: 850px;
+            background-color: #efeae2;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        @media (min-width: 480px) {
+            .whatsapp-container {
+                border-radius: 12px;
+                height: 90vh;
+            }
+        }
+
+        /* Cabeçalho do WhatsApp */
+        .whatsapp-header {
+            background-color: #005c4b;
+            color: white;
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+
+        /* Espaço da foto removida mantendo o layout limpo */
+        .profile-placeholder {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background-color: #128c7e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .profile-info h1 {
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .profile-info p {
+            font-size: 12px;
+            color: #e1e1e1;
+        }
+
+        /* Área de Chat */
+        .whatsapp-chat {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background-image: radial-gradient(#d1dbd6 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 10px 14px;
+            border-radius: 7.5px;
+            font-size: 14px;
+            line-height: 1.4;
+            position: relative;
+            box-shadow: 0 1px 0.5px rgba(0,0,0,0.13);
+            word-wrap: break-word;
+            white-space: pre-line;
+        }
+
+        .message.incoming {
+            background-color: #ffffff;
+            align-self: flex-start;
+            border-top-left-radius: 0;
+        }
+
+        .message.outgoing {
+            background-color: #d9fdd3;
+            align-self: flex-end;
+            border-top-right-radius: 0;
+        }
+
+        .message .time {
+            font-size: 10px;
+            color: #667781;
+            float: right;
+            margin-top: 4px;
+            margin-left: 10px;
+        }
+
+        /* Área de Ações / Botões Rápidos */
+        .whatsapp-actions {
+            background-color: #f0f2f5;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            border-top: 1px solid #d1d7db;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 6px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+        }
+
+        .action-buttons::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        .action-buttons::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 4px;
+        }
+
+        .btn-option {
+            background-color: #ffffff;
+            border: 1px solid #00a884;
+            color: #00a884;
+            padding: 8px 12px;
+            border-radius: 16px;
+            font-size: 13px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-option:hover {
+            background-color: #e6f8f5;
+        }
+
+        .btn-whatsapp {
+            background-color: #25d366;
+            border-color: #25d366;
+            color: white;
+        }
+
+        .btn-whatsapp:hover {
+            background-color: #20ba5a;
+        }
+
+        .btn-maps {
+            background-color: #ea4335;
+            border-color: #ea4335;
+            color: white;
+        }
+
+        .btn-maps:hover {
+            background-color: #d33828;
+        }
+
+        /* Área de Input */
+        .whatsapp-input-area {
+            background-color: #f0f2f5;
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .whatsapp-input-area input {
+            flex: 1;
+            padding: 10px 14px;
+            border: none;
+            border-radius: 8px;
+            outline: none;
+            font-size: 14px;
+            background-color: #ffffff;
+        }
+
+        .whatsapp-input-area button {
+            background-color: #00a884;
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+        .whatsapp-input-area button:hover {
+            background-color: #01876f;
+        }
+
+        /* Caixa de Simulação */
+        .simulation-box {
+            background: #fff;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .simulation-box input {
+            width: 100%;
+            padding: 8px;
+            margin: 8px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .simulation-box button {
+            background-color: #00a884;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="whatsapp-container">
+        <!-- Cabeçalho -->
+        <div class="whatsapp-header">
+            <!-- Sem imagem (placeholder com iniciais limpas) -->
+            <div class="profile-placeholder">RN</div>
+            <div class="profile-info">
+                <h1>Revendedora Nátalia</h1>
+                <p>KMHAKKA - Barboza Motors</p>
+            </div>
+        </div>
+
+        <!-- Histórico de Mensagens -->
+        <div class="whatsapp-chat" id="chatContainer">
+            <div class="message incoming">
+                Sou assistente Virtual da Revendedora Nátali, gostaria de conhecer a KM-HAKKA Barboza Motors.
+                <span class="time" id="currentTime">12:53</span>
+            </div>
+        </div>
+
+        <!-- Botões de Atalho / Interação -->
+        <div class="whatsapp-actions">
+            <div class="action-buttons">
+                <!-- Botão WhatsApp com o número solicitado -->
+                <a href="https://wa.me/5534992444249?text=Olá,%20gostaria%20de%20mais%20informações!" target="_blank" class="btn-option btn-whatsapp">
+                    💬 WhatsApp
+                </a>
+                
+                <!-- Botão Maps com o endereço solicitado -->
+                <a href="https://www.google.com/maps/search/?api=1&query=Rua+José+Bonifácio,+370+-+Bairro+Leblon,+Uberaba,+MG" target="_blank" class="btn-option btn-maps" title="Rua José Bonifácio, 370 - Bairro Leblon, Uberaba, MG">
+                    📍 Venha nos fazer uma visita
+                </a>
+
+                <button class="btn-option" onclick="sendOption('Sobre as motos')">Sobre as motos</button>
+                <button class="btn-option" onclick="sendOption('Qual o Valor das Motos')">Qual o Valor das Motos</button>
+                <button class="btn-option" onclick="sendOption('Qual a autonomia')">Qual a autonomia</button>
+                <button class="btn-option" onclick="toggleSimulation()">Simular Parcelamento</button>
+            </div>
+            
+            <!-- Caixa interativa para simulação -->
+            <div id="simulationBox" class="simulation-box" style="display: none;">
+                <strong>Simulador de Parcelamento:</strong>
+                <input type="number" id="simValue" placeholder="Digite o valor desejado (Ex: 10999)" />
+                <button onclick="runSimulation()">Calcular Parcelas</button>
+            </div>
+        </div>
+
+        <!-- Barra de Input de Texto -->
+        <div class="whatsapp-input-area">
+            <input type="text" id="userInput" placeholder="Digite uma mensagem..." onkeypress="handleKeyPress(event)">
+            <button onclick="sendMessage()">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Atualizar relógio com horário atual
+        const now = new Date();
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        document.getElementById('currentTime').innerText = `${hours}:${minutes}`;
+
+        function appendMessage(text, sender) {
+            const chatContainer = document.getElementById('chatContainer');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            
+            const timeSpan = document.createElement('span');
+            timeSpan.className = 'time';
+            const currentH = new Date();
+            timeSpan.innerText = `${String(currentH.getHours()).padStart(2, '0')}:${String(currentH.getMinutes()).padStart(2, '0')}`;
+            
+            messageDiv.innerText = text;
+            messageDiv.appendChild(timeSpan);
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        // Respostas automáticas locais em JavaScript
+        function handleBotResponse(userText) {
+            const textLower = userText.toLowerCase();
+
+            setTimeout(() => {
+                if (textLower.includes('sobre as motos')) {
+                    appendMessage(
+                        `✅ Motor de 1000W\n` +
+                        `✅ Autonomia de até 60 km\n` +
+                        `✅ Velocidade de até 32 km/h\n` +
+                        `✅ Suporta até 150 kg\n` +
+                        `✅ 1 ano de garantia\n` +
+                        `✅ Sem IPVA e, conforme a classificação do modelo, sem necessidade de CNH ou emplacamento.`, 
+                        'incoming'
+                    );
+                } else if (textLower.includes('valor') || textLower.includes('quanto custa') || textLower.includes('preço')) {
+                    appendMessage(
+                        `💰 Valor: R$ 10.999,00 com o Desconto de 5% no Pix`, 
+                        'incoming'
+                    );
+                } else if (textLower.includes('autonomia') || textLower.includes('velocidade') || textLower.includes('motor')) {
+                    appendMessage(
+                        `Autonomia de até 60 km, com o Motor de 1000W, chega a Velocidade de até 32 km/h, Suporta até 150 kg`, 
+                        'incoming'
+                    );
+                } else if (textLower.includes('simular') || textLower.includes('parcela')) {
+                    appendMessage(
+                        `Para simular o parcelamento, utilize a ferramenta abaixo ou digite o valor que deseja simular. As opções disponíveis são:\n\n` +
+                        `- Cartão de crédito em até 12x sem juros\n` +
+                        `- Entrada + saldo em até 10x sem juros no cartão\n` +
+                        `- Boleto em até 36x, com entrada a partir de R$ 500,00 e sujeito à análise de crédito.`,
+                        'incoming'
+                    );
+                    toggleSimulation();
+                } else {
+                    appendMessage(
+                        `Olá! Sou a assistente virtual da Revendedora Nátalia (KM-HAKKA Barboza Motors). Como posso te ajudar hoje? Utilize os botões acima para entrar em contato, ver a localização ou realizar simulações.`, 
+                        'incoming'
+                    );
+                }
+            }, 500);
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('userInput');
+            const text = input.value.trim();
+            if (text === '') return;
+
+            appendMessage(text, 'outgoing');
+            input.value = '';
+
+            handleBotResponse(text);
+        }
+
+        function sendOption(optionText) {
+            appendMessage(optionText, 'outgoing');
+            handleBotResponse(optionText);
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        function toggleSimulation() {
+            const box = document.getElementById('simulationBox');
+            box.style.display = box.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function runSimulation() {
+            const valInput = document.getElementById('simValue');
+            const valor = parseFloat(valInput.value);
+
+            if (isNaN(valor) || valor <= 0) {
+                alert('Por favor, digite um valor válido para simulação.');
+                return;
+            }
+
+            appendMessage(`Simular valor de R$ ${valor.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`, 'outgoing');
+
+            setTimeout(() => {
+                let resultado = `📊 **Simulação para o valor de R$ ${valor.toLocaleString('pt-BR', {minimumFractionDigits: 2})}**:\n\n`;
+                
+                let p6 = (valor / 6).toFixed(2);
+                let p12 = (valor / 12).toFixed(2);
+                let p18 = (valor / 18).toFixed(2);
+                let p24 = (valor / 24).toFixed(2);
+                let p36 = (valor / 36).toFixed(2);
+
+                resultado += `🔹 **Cartão de Crédito (até 12x sem juros):**\n`;
+                resultado += `• 6x de R$ ${p6}\n`;
+                resultado += `• 12x de R$ ${p12}\n\n`;
+
+                resultado += `🔹 **Entrada + Saldo (até 10x sem juros no cartão):**\n`;
+                resultado += `• Saldo parcelado em até 10x\n\n`;
+
+                resultado += `🔹 **Boleto (em até 36x, entrada a partir de R$ 500,00 - sujeito à análise):**\n`;
+                resultado += `• 18x de R$ ${p18}\n`;
+                resultado += `• 24x de R$ ${p24}\n`;
+                resultado += `• 36x de R$ ${p36}\n`;
+
+                appendMessage(resultado, 'incoming');
+                toggleSimulation();
+                valInput.value = '';
+            }, 600);
+        }
+    </script>
+</body>
+</html>
