@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assistente Virtual da Natália | KMHAKA - Barboza Motors</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        wa: {
+                            header: '#075E54',
+                            teal: '#128C7E',
+                            green: '#25D366',
+                            lightgreen: '#DCF8C6',
+                            bg: '#E5DDD5',
+                            darkbg: '#0b141a',
+                            darkheader: '#202c33',
+                            darkmsg: '#005c4b',
+                            darkincoming: '#202c33',
+                            darkbtn: '#2F4F4F'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* WhatsApp Chat Background Pattern */
+        .chat-pattern {
+            background-color: #efeae2;
+            background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+            background-size: 16px 16px;
+        }
+
+        .dark .chat-pattern {
+            background-color: #0b141a;
+            background-image: radial-gradient(#1e293b 1px, transparent 1px);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 3px;
+        }
+        .dark ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Chat bubble tails */
+        .bubble-in::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -8px;
+            width: 0;
+            height: 0;
+            border-top: 8px solid white;
+            border-left: 8px solid transparent;
+        }
+        .dark .bubble-in::before {
+            border-top-color: #202c33;
+        }
+
+        .bubble-out::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: -8px;
+            width: 0;
+            height: 0;
+            border-top: 8px solid #DCF8C6;
+            border-right: 8px solid transparent;
+        }
+        .dark .bubble-out::after {
+            border-top-color: #005c4b;
+        }
+
+        /* Message animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-msg {
+            animation: fadeIn 0.25s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="h-full bg-slate-900 font-sans antialiased text-slate-800 dark:text-slate-100 flex flex-col justify-center items-center p-0 md:p-4">
+
+    <!-- Container Principal Simulado -->
+    <div class="w-full max-w-5xl h-full md:h-[92vh] bg-white dark:bg-slate-900 md:rounded-2xl shadow-2xl flex flex-col md:flex-row overflow-hidden border border-slate-700/30">
+
+        <!-- PAINEL LATERAL (Informações da Moto & Simulador Direto) -->
+        <aside class="w-full md:w-80 bg-slate-800 text-white flex flex-col border-r border-slate-700">
+            <!-- Header do Sidebar -->
+            <div class="p-4 bg-wa-header flex justify-between items-center shadow-md">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-full bg-amber-500 flex items-center justify-center font-bold text-lg text-slate-900 shadow">
+                        ⚡
+                    </div>
+                    <div>
+                        <h1 class="font-bold text-base leading-tight">KMHAKA Eletro</h1>
+                        <p class="text-xs text-emerald-300 font-medium">Barboza Motors</p>
+                    </div>
+                </div>
+                <a href="https://wa.me/5534992444249?text=Olá!%20Gostaria%20de%20mais%20informações%20sobre%20a%20KMHAKA!" target="_blank" title="Abrir direto no WhatsApp Real" class="bg-emerald-500 hover:bg-emerald-600 text-white p-2 rounded-full transition duration-200">
+                    <i class="fab fa-whatsapp text-lg"></i>
+                </a>
+            </div>
+
+            <!-- Card Moto Destaque -->
+            <div class="p-4 overflow-y-auto space-y-4 flex-1">
+                <div class="bg-slate-700/60 rounded-xl p-3 border border-slate-600/50 shadow-inner text-center">
+                    <div class="relative rounded-lg overflow-hidden bg-slate-900 p-2 mb-2 flex justify-center items-center">
+                        <span class="absolute top-2 left-2 bg-emerald-500 text-slate-950 font-bold text-[10px] uppercase px-2 py-0.5 rounded-full">100% Elétrica</span>
+                        <div class="text-6xl my-3">🛵⚡</div>
+                    </div>
+                    <h2 class="font-bold text-lg text-emerald-400">Moto Elétrica KMHAKA</h2>
+                    <p class="text-xs text-slate-300">Liberdade, Economia e Estilo</p>
+                    <div class="mt-2 text-xl font-extrabold text-white">
+                        R$ 10.999,00 
+                        <span class="block text-xs font-normal text-emerald-300">à vista / Pix com 5% desc.: <b class="text-white">R$ 10.449,05</b></span>
+                    </div>
+                </div>
+
+                <!-- Resumo Rápido Especificações -->
+                <div class="space-y-2 text-xs">
+                    <h3 class="font-semibold text-slate-400 uppercase tracking-wider text-[11px]">Destaques do Modelo</h3>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div class="bg-slate-700/40 p-2 rounded-lg border border-slate-600/30 flex items-center space-x-2">
+                            <i class="fas fa-bolt text-amber-400 text-sm"></i>
+                            <div>
+                                <span class="block text-slate-400 text-[10px]">Potência</span>
+                                <span class="font-bold">1000W</span>
+                            </div>
+                        </div>
+                        <div class="bg-slate-700/40 p-2 rounded-lg border border-slate-600/30 flex items-center space-x-2">
+                            <i class="fas fa-road text-sky-400 text-sm"></i>
+                            <div>
+                                <span class="block text-slate-400 text-[10px]">Autonomia</span>
+                                <span class="font-bold">Até 60km</span>
+                            </div>
+                        </div>
+                        <div class="bg-slate-700/40 p-2 rounded-lg border border-slate-600/30 flex items-center space-x-2">
+                            <i class="fas fa-gauge-high text-emerald-400 text-sm"></i>
+                            <div>
+                                <span class="block text-slate-400 text-[10px]">Velocidade</span>
+                                <span class="font-bold">32 km/h</span>
+                            </div>
+                        </div>
+                        <div class="bg-slate-700/40 p-2 rounded-lg border border-slate-600/30 flex items-center space-x-2">
+                            <i class="fas fa-shield-halved text-purple-400 text-sm"></i>
+                            <div>
+                                <span class="block text-slate-400 text-[10px]">Garantia</span>
+                                <span class="font-bold">1 Ano</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Painel de Contato Direto -->
+                <div class="bg-emerald-950/40 rounded-xl p-3 border border-emerald-500/30 text-xs text-slate-300 space-y-2">
+                    <div class="flex items-center space-x-2 text-emerald-400 font-bold">
+                        <i class="fas fa-store"></i>
+                        <span>Endereço da Loja:</span>
+                    </div>
+                    <p class="leading-relaxed">Rua José Bonifácio, 364 - Bairro Leblon</p>
+                    <hr class="border-slate-700">
+                    <div class="flex items-center space-x-2 text-emerald-400 font-bold">
+                        <i class="fab fa-whatsapp text-sm"></i>
+                        <span>WhatsApp Oficial:</span>
+                    </div>
+                    <p class="font-mono text-white text-sm font-bold">(34) 99244-4249</p>
+                </div>
+            </div>
+
+            <!-- Footer do Sidebar com Ação rápida para abrir simulador modal/chat -->
+            <div class="p-3 bg-slate-900 border-t border-slate-700">
+                <a id="btnLinkWhatsApp" href="https://wa.me/5534992444249?text=Olá%20Natália!%20Vim%20pelo%20site%20e%20gostaria%20de%20atendimento." target="_blank" 
+                   class="w-full bg-emerald-600 hover:bg-emerald-500 text-white py-2.5 px-4 rounded-lg font-bold text-xs flex items-center justify-center space-x-2 transition shadow-lg">
+                    <i class="fab fa-whatsapp text-base"></i>
+                    <span>Falar Direto no WhatsApp Real</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- AREA DO CHAT WHATSAPP -->
+        <main class="flex-1 flex flex-col h-full bg-slate-100 relative">
+            
+            <!-- Header do Chat WhatsApp -->
+            <header class="bg-wa-header text-white px-4 py-2.5 flex items-center justify-between shadow-md z-10">
+                <div class="flex items-center space-x-3">
+                    <div class="relative">
+                        <!-- Avatar Natália -->
+                        <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=150&q=80" 
+                             alt="Natália Barboza Motors" 
+                             class="w-10 h-10 rounded-full object-cover border-2 border-emerald-400">
+                        <span class="absolute bottom-0 right-0 w-3 h-3 bg-emerald-400 border-2 border-slate-900 rounded-full"></span>
+                    </div>
+                    <div>
+                        <h2 class="font-bold text-sm md:text-base leading-tight flex items-center space-x-1.5">
+                            <span>Assistente Virtual da Natália</span>
+                            <i class="fas fa-check-circle text-sky-400 text-xs" title="Verificada"></i>
+                        </h2>
+                        <p class="text-xs text-emerald-200">Online • Barboza Motors</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center space-x-3 text-emerald-100">
+                    <a href="tel:34992444249" title="Ligar" class="hover:text-white p-2">
+                        <i class="fas fa-phone"></i>
+                    </a>
+                    <a href="https://wa.me/5534992444249" target="_blank" title="Abrir WhatsApp Oficial" class="hover:text-white p-2 flex items-center text-xs bg-emerald-700/50 hover:bg-emerald-700 px-3 py-1 rounded-full border border-emerald-500/40">
+                        <i class="fab fa-whatsapp mr-1.5"></i>
+                        <span class="hidden sm:inline">(34) 99244-4249</span>
+                    </a>
+                </div>
+            </header>
+
+            <!-- Corpo da conversa (Mensagens) -->
+            <div id="chatMessages" class="flex-1 p-4 overflow-y-auto space-y-3 chat-pattern">
+                
+                <!-- Data Tag -->
+                <div class="flex justify-center">
+                    <span class="bg-white/80 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 text-[11px] font-medium px-3 py-1 rounded-md shadow-sm uppercase tracking-wider">
+                        Hoje
+                    </span>
+                </div>
+
+                <!-- Mensagem de Criptografia Segura -->
+                <div class="flex justify-center my-2">
+                    <div class="bg-amber-100/90 dark:bg-amber-950/60 border border-amber-300/40 text-amber-900 dark:text-amber-200 text-[11px] text-center max-w-md px-3 py-1.5 rounded-lg shadow-sm">
+                        <i class="fas fa-lock text-xs mr-1"></i> As mensagens são simuladas e automatizadas pela Assistente da Natália (Barboza Motors).
+                    </div>
+                </div>
+
+                <!-- Resposta Automática Inicial da I.A -->
+                <div class="flex justify-start animate-msg">
+                    <div class="relative bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 p-3.5 rounded-xl rounded-tl-none shadow max-w-[85%] md:max-w-[75%] bubble-in border border-slate-200 dark:border-slate-700">
+                        <p class="font-semibold text-emerald-700 dark:text-emerald-400 text-xs mb-1">Natália | KMHAKA</p>
+                        <p class="text-sm leading-relaxed">
+                            🏍️⚡ <b>CONHEÇA A KM-HAKA DA BARBOZA MOTORS</b><br><br>
+                            Quer economizar no dia a dia e ter mais liberdade para se locomover? A KM-HAKA é 100% elétrica, econômica e cheia de vantagens!
+                        </p>
+                        <span class="text-[10px] text-slate-400 float-right mt-1 ml-2" id="time1">12:00</span>
+                    </div>
+                </div>
+
+                <!-- Segunda Mensagem de Menu de Opções -->
+                <div class="flex justify-start animate-msg">
+                    <div class="relative bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 p-3.5 rounded-xl rounded-tl-none shadow max-w-[85%] md:max-w-[75%] bubble-in border border-slate-200 dark:border-slate-700">
+                        <p class="text-sm leading-relaxed mb-3">
+                            Como posso te ajudar agora? Escolha uma das opções rápidas abaixo ou digite sua dúvida! 👇
+                        </p>
+                        <!-- Quick Buttons Dentro da Mensagem -->
+                        <div class="space-y-1.5">
+                            <button onclick="triggerQuickReply('vantagens')" class="w-full text-left bg-slate-100 hover:bg-emerald-50 dark:bg-slate-700 dark:hover:bg-slate-600 text-emerald-700 dark:text-emerald-300 px-3 py-2 rounded-lg text-xs font-semibold flex items-center justify-between border border-slate-200 dark:border-slate-600 transition">
+                                <span>⚡ Características & Vantagens</span>
+                                <i class="fas fa-chevron-right text-[10px]"></i>
+                            </button>
+                            <button onclick="triggerQuickReply('valores')" class="w-full text-left bg-slate-100 hover:bg-emerald-50 dark:bg-slate-700 dark:hover:bg-slate-600 text-emerald-700 dark:text-emerald-300 px-3 py-2 rounded-lg text-xs font-semibold flex items-center justify-between border border-slate-200 dark:border-slate-600 transition">
+                                <span>💰 Valores e Formas de Pagamento</span>
+                                <i class="fas fa-chevron-right text-[10px]"></i>
+                            </button>
+                            <button onclick="triggerQuickReply('simular')" class="w-full text-left bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2 rounded-lg text-xs font-bold flex items-center justify-between shadow transition">
+                                <span>🧮 Simular Parcelamento Agora</span>
+                                <i class="fas fa-calculator text-[10px]"></i>
+                            </button>
+                            <button onclick="triggerQuickReply('endereco')" class="w-full text-left bg-slate-100 hover:bg-emerald-50 dark:bg-slate-700 dark:hover:bg-slate-600 text-emerald-700 dark:text-emerald-300 px-3 py-2 rounded-lg text-xs font-semibold flex items-center justify-between border border-slate-200 dark:border-slate-600 transition">
+                                <span>📍 Endereço da Loja</span>
+                                <i class="fas fa-chevron-right text-[10px]"></i>
+                            </button>
+                        </div>
+                        <span class="text-[10px] text-slate-400 float-right mt-2 ml-2" id="time2">12:00</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Formulário de Simulação de Parcelas Integrado (Expansível / Modal Inline) -->
+            <div id="simuladorBox" class="hidden bg-slate-800 text-white border-t border-emerald-500/40 p-4 shadow-2xl relative animate-msg">
+                <button onclick="toggleSimulador(false)" class="absolute top-3 right-3 text-slate-400 hover:text-white p-1">
+                    <i class="fas fa-times text-base"></i>
+                </button>
+                <div class="max-w-2xl mx-auto space-y-3">
+                    <div class="flex items-center space-x-2 border-b border-slate-700 pb-2">
+                        <i class="fas fa-calculator text-emerald-400 text-lg"></i>
+                        <h3 class="font-bold text-sm md:text-base text-white">Simulador de Parcelas - KMHAKA (R$ 10.999,00)</h3>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <!-- Entrada -->
+                        <div>
+                            <label class="block text-xs text-slate-300 font-medium mb-1">Valor da Entrada (R$):</label>
+                            <input type="number" id="inputEntrada" placeholder="Ex: 500 ou 2000" min="0" max="10000" value="1000"
+                                   class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500">
+                            <span class="text-[10px] text-slate-400">Min. R$ 500 para boleto</span>
+                        </div>
+
+                        <!-- Parcelas -->
+                        <div>
+                            <label class="block text-xs text-slate-300 font-medium mb-1">Nº de Parcelas:</label>
+                            <select id="selectParcelas" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500">
+                                <option value="6">6x Vezes</option>
+                                <option value="12" selected>12x Vezes (Cartão S/ Juros)</option>
+                                <option value="18">18x Vezes</option>
+                                <option value="24">24x Vezes</option>
+                                <option value="36">36x Vezes (Boleto)</option>
+                            </select>
+                        </div>
+
+                        <!-- Tipo de Pagamento -->
+                        <div>
+                            <label class="block text-xs text-slate-300 font-medium mb-1">Modalidade:</label>
+                            <select id="selectTipo" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500">
+                                <option value="cartao">Cartão de Crédito</option>
+                                <option value="boleto">Boleto (Análise de crédito)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Botão de Ação Requerido na cor #2F4F4F -->
+                    <div class="pt-1 flex space-x-2">
+                        <button onclick="executarSimulacao()" 
+                                style="background-color: #2F4F4F;" 
+                                class="flex-1 hover:brightness-125 text-white font-bold py-2.5 px-4 rounded-lg text-xs md:text-sm shadow-md transition flex items-center justify-center space-x-2">
+                            <i class="fas fa-calculator"></i>
+                            <span>Simular Parcelas</span>
+                        </button>
+                        <button onclick="toggleSimulador(false)" class="bg-slate-700 hover:bg-slate-600 text-slate-200 px-4 py-2.5 rounded-lg text-xs font-semibold">
+                            Cancelar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botões Rápido Flutuantes de Atalho -->
+            <div class="px-3 py-2 bg-slate-200 dark:bg-slate-800 border-t border-slate-300 dark:border-slate-700 flex space-x-2 overflow-x-auto text-xs scrollbar-none">
+                <button onclick="triggerQuickReply('vantagens')" class="whitespace-nowrap bg-white dark:bg-slate-700 hover:bg-slate-100 text-slate-700 dark:text-slate-200 px-3 py-1.5 rounded-full border border-slate-300 dark:border-slate-600 font-medium shadow-sm transition">
+                    ⚡ Características
+                </button>
+                <button onclick="triggerQuickReply('valores')" class="whitespace-nowrap bg-white dark:bg-slate-700 hover:bg-slate-100 text-slate-700 dark:text-slate-200 px-3 py-1.5 rounded-full border border-slate-300 dark:border-slate-600 font-medium shadow-sm transition">
+                    💰 Preço & Desconto
+                </button>
+                <button onclick="triggerQuickReply('pagamento')" class="whitespace-nowrap bg-white dark:bg-slate-700 hover:bg-slate-100 text-slate-700 dark:text-slate-200 px-3 py-1.5 rounded-full border border-slate-300 dark:border-slate-600 font-medium shadow-sm transition">
+                    💳 Formas de Pagamento
+                </button>
+                <button onclick="toggleSimulador(true)" class="whitespace-nowrap bg-emerald-600 text-white font-bold px-3 py-1.5 rounded-full shadow-sm hover:bg-emerald-500 transition">
+                    🧮 Simular Parcelas (#2F4F4F)
+                </button>
+                <button onclick="triggerQuickReply('endereco')" class="whitespace-nowrap bg-white dark:bg-slate-700 hover:bg-slate-100 text-slate-700 dark:text-slate-200 px-3 py-1.5 rounded-full border border-slate-300 dark:border-slate-600 font-medium shadow-sm transition">
+                    📍 Endereço
+                </button>
+            </div>
+
+            <!-- Campo de Entrada de Mensagem simulado -->
+            <footer class="bg-slate-200 dark:bg-slate-800 px-3 py-2 flex items-center space-x-2 border-t border-slate-300 dark:border-slate-700">
+                <button class="text-slate-500 dark:text-slate-400 p-2 hover:text-emerald-600">
+                    <i class="far fa-face-smile text-xl"></i>
+                </button>
+                <button class="text-slate-500 dark:text-slate-400 p-2 hover:text-emerald-600">
+                    <i class="fas fa-paperclip text-lg"></i>
+                </button>
+                
+                <input id="userMessageInput" type="text" placeholder="Digite sua mensagem ou dúvida..." 
+                       onkeydown="if(event.key === 'Enter') sendUserMessage()"
+                       class="flex-1 bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 border-none rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 shadow-inner">
+                
+                <button onclick="sendUserMessage()" class="bg-emerald-600 hover:bg-emerald-500 text-white w-10 h-10 rounded-full flex items-center justify-center shadow transition">
+                    <i class="fas fa-paper-plane text-sm"></i>
+                </button>
+            </footer>
+
+        </main>
+    </div>
+
+    <!-- Script de Lógica do Chatbot I.A e Simulador -->
+    <script>
+        // Dados Oficiais KMHAKA / Barboza Motors
+        const VALOR_MOTO = 10999.00;
+        const DESCONTO_PIX = 0.05; // 5%
+        const VALOR_PIX = VALOR_MOTO * (1 - DESCONTO_PIX); // R$ 10.449,05
+        const NUMERO_WHATSAPP = "5534992444249";
+        const NUMERO_FORMATADO = "(34) 99244-4249";
+
+        // Inicializar horários
+        document.addEventListener("DOMContentLoaded", () => {
+            const timeStr = getFormattedTime();
+            document.getElementById("time1").innerText = timeStr;
+            document.getElementById("time2").innerText = timeStr;
+        });
+
+        function getFormattedTime() {
+            const now = new Date();
+            return now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+
+        // Toggle Simulador Box
+        function toggleSimulador(show) {
+            const box = document.getElementById("simuladorBox");
+            if (show) {
+                box.classList.remove("hidden");
+                box.scrollIntoView({ behavior: 'smooth' });
+            } else {
+                box.classList.add("hidden");
+            }
+        }
+
+        // Adicionar Mensagem do Usuário na Tela
+        function addUserMessage(text) {
+            const chatContainer = document.getElementById("chatMessages");
+            const timeStr = getFormattedTime();
+
+            const msgDiv = document.createElement("div");
+            msgDiv.className = "flex justify-end animate-msg";
+            msgDiv.innerHTML = `
+                <div class="relative bg-wa-lightgreen dark:bg-wa-darkmsg text-slate-800 dark:text-slate-100 p-3 rounded-xl rounded-tr-none shadow max-w-[85%] md:max-w-[75%] bubble-out">
+                    <p class="text-sm leading-relaxed">${escapeHtml(text)}</p>
+                    <div class="flex items-center justify-end space-x-1 mt-1">
+                        <span class="text-[10px] text-slate-500 dark:text-emerald-200">${timeStr}</span>
+                        <i class="fas fa-check-double text-[10px] text-sky-500"></i>
+                    </div>
+                </div>
+            `;
+            chatContainer.appendChild(msgDiv);
+            scrollToBottom();
+        }
+
+        // Adicionar Mensagem da I.A Natália
+        function addIAMessage(htmlContent) {
+            const chatContainer = document.getElementById("chatMessages");
+            const timeStr = getFormattedTime();
+
+            // Simular "Digitando..." antes de responder
+            const typingDiv = document.createElement("div");
+            typingDiv.className = "flex justify-start animate-msg id-typing";
+            typingDiv.innerHTML = `
+                <div class="bg-white dark:bg-slate-800 p-3 rounded-xl rounded-tl-none shadow border border-slate-200 dark:border-slate-700 flex items-center space-x-2">
+                    <span class="text-xs text-slate-400 font-medium">Natália está digitando...</span>
+                    <div class="flex space-x-1">
+                        <div class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-bounce"></div>
+                        <div class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+                        <div class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-bounce" style="animation-delay: 0.4s"></div>
+                    </div>
+                </div>
+            `;
+            chatContainer.appendChild(typingDiv);
+            scrollToBottom();
+
+            setTimeout(() => {
+                typingDiv.remove();
+                const msgDiv = document.createElement("div");
+                msgDiv.className = "flex justify-start animate-msg";
+                msgDiv.innerHTML = `
+                    <div class="relative bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 p-3.5 rounded-xl rounded-tl-none shadow max-w-[85%] md:max-w-[75%] bubble-in border border-slate-200 dark:border-slate-700">
+                        <p class="font-semibold text-emerald-700 dark:text-emerald-400 text-xs mb-1">Natália | KMHAKA</p>
+                        <div class="text-sm leading-relaxed">${htmlContent}</div>
+                        <span class="text-[10px] text-slate-400 float-right mt-1 ml-2">${timeStr}</span>
+                    </div>
+                `;
+                chatContainer.appendChild(msgDiv);
+                scrollToBottom();
+            }, 800);
+        }
+
+        // Enviar mensagem digitada
+        function sendUserMessage() {
+            const input = document.getElementById("userMessageInput");
+            const text = input.value.trim();
+            if (!text) return;
+
+            addUserMessage(text);
+            input.value = "";
+            processIAMatch(text);
+        }
+
+        // Tratar botões de ação rápida
+        function triggerQuickReply(type) {
+            let userText = "";
+            if (type === 'vantagens') userText = "Quais são as características e vantagens da moto KMHAKA?";
+            else if (type === 'valores') userText = "Qual o valor da moto e tem desconto?";
+            else if (type === 'pagamento') userText = "Quais são as formas de pagamento disponíveis?";
+            else if (type === 'endereco') userText = "Qual é o endereço da loja?";
+            else if (type === 'simular') {
+                addUserMessage("Gostaria de fazer uma simulação de parcelamento.");
+                toggleSimulador(true);
+                return;
+            }
+
+            addUserMessage(userText);
+            processIAMatch(userText);
+        }
+
+        // Lógica da Inteligência Artificial Automática
+        function processIAMatch(query) {
+            const q = query.toLowerCase();
+
+            // Respostas baseadas em palavras-chave
+            if (q.includes("caracteristica") || q.includes("vantagem") || q.includes("autonomia") || q.includes("motor") || q.includes("cnh") || q.includes("ipva") || q.includes("garantia")) {
+                const response = `
+                    <b>⚡ Características Principais da KM-HAKA:</b><br><br>
+                    ✅ <b>Motor:</b> 1000W potente<br>
+                    ✅ <b>Autonomia:</b> Até 60 km por carga completa<br>
+                    ✅ <b>Velocidade:</b> Até 32 km/h<br>
+                    ✅ <b>Capacidade:</b> Suporta até 150 kg<br>
+                    ✅ <b>Garantia:</b> 1 ano de garantia total<br>
+                    ✅ <b>Sem IPVA:</b> Conforme a classificação do modelo, sem necessidade de CNH ou emplacamento!
+                    <br><br>Gostaria de simular as parcelas para a sua compra?
+                `;
+                addIAMessage(response);
+            } 
+            else if (q.includes("valor") || q.includes("preco") || q.includes("preço") || q.includes("quanto custa") || q.includes("desconto") || q.includes("pix")) {
+                const response = `
+                    💰 <b>Valores da Moto Elétrica KM-HAKA:</b><br><br>
+                    • <b>Valor Base:</b> R$ 10.999,00<br>
+                    • <b>Pagamento via Pix:</b> <u>5% de Desconto</u> exclusivo! Fica por apenas <b>R$ 10.449,05</b> à vista.<br><br>
+                    Para facilitar sua compra, aceitamos entrada + parcelamento. Deseja realizar uma simulação rápida agora?
+                `;
+                addIAMessage(response);
+            }
+            else if (q.includes("pagamento") || q.includes("forma") || q.includes("cartao") || q.includes("cartão") || q.includes("boleto") || q.includes("parcela")) {
+                const response = `
+                    💳 <b>Formas de Pagamento Facilitadas:</b><br><br>
+                    ✅ Cartão de crédito em até <b>12x sem juros</b><br>
+                    ✅ Entrada + saldo em até <b>10x sem juros</b> no cartão<br>
+                    ✅ Boleto em até <b>36x</b>, com entrada a partir de R$ 500,00 (sujeito à análise de crédito).<br><br>
+                    📍 <b>Nosso endereço:</b> Rua José Bonifácio, 364 - Bairro Leblon.<br><br>
+                    Para eu calcular para você: informe o valor da entrada e em quantas parcelas prefere!
+                `;
+                addIAMessage(response);
+            }
+            else if (q.includes("onde") || q.includes("endereco") || q.includes("endereço") || q.includes("loja") || q.includes("bairro") || q.includes("fica")) {
+                const response = `
+                    📍 <b>Nosso Endereço:</b><br>
+                    Rua José Bonifácio, 364 - Bairro Leblon.<br><br>
+                    Venha nos fazer uma visita na Barboza Motors e faça um Test-Drive da KM-HAKA! 🛵💨
+                `;
+                addIAMessage(response);
+            }
+            else {
+                // Resposta Padrão Inteligente da Natália
+                const response = `
+                    Olá! Sou a <b>Natália</b>, vendedora da <b>KMHAKA / Barboza Motors</b>. 🛵⚡<br><br>
+                    A KM-HAKA custa <b>R$ 10.999,00</b> (com 5% de desconto no Pix por <b>R$ 10.449,05</b>).<br><br>
+                    Possuímos opções em até 12x Sem Juros no Cartão ou em até 36x no Boleto (entrada a partir de R$ 500,00).<br><br>
+                    Você pode clicar no botão <b>"Simular Parcelas"</b> ou me informar qual valor você pretende dar de entrada!
+                `;
+                addIAMessage(response);
+            }
+        }
+
+        // Executar Simulação de Parcelamento Interativa
+        function executarSimulacao() {
+            const entradaVal = parseFloat(document.getElementById("inputEntrada").value) || 0;
+            const parcelas = parseInt(document.getElementById("selectParcelas").value);
+            const tipo = document.getElementById("selectTipo").value;
+
+            if (entradaVal < 0) {
+                alert("Por favor, insira um valor de entrada válido.");
+                return;
+            }
+
+            if (tipo === 'boleto' && entradaVal < 500) {
+                alert("Para modalidade Boleto, a entrada mínima é de R$ 500,00.");
+                return;
+            }
+
+            const saldoRestante = VALOR_MOTO - entradaVal;
+            if (saldoRestante <= 0) {
+                alert("O valor da entrada cobre o valor total da moto! Recomendamos o pagamento via Pix com 5% de desconto (R$ 10.449,05).");
+                return;
+            }
+
+            // Cálculo das parcelas (Sem juros para cartão até 12x, taxa simbólica para prazos maiores no boleto)
+            let taxaJuros = (tipo === 'boleto' && parcelas > 12) ? 0.015 : 0; 
+            let valorParcela = 0;
+
+            if (taxaJuros > 0) {
+                // Montante com juros simples para fins de simulação comercial
+                valorParcela = (saldoRestante * (1 + (taxaJuros * (parcelas / 6)))) / parcelas;
+            } else {
+                valorParcela = saldoRestante / parcelas;
+            }
+
+            const entradaFmt = entradaVal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            const saldoFmt = saldoRestante.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            const parcelaFmt = valorParcela.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            const totalMotoFmt = VALOR_MOTO.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+            // Mensagem do Usuário no Chat
+            addUserMessage(`Simulação Realizada:\nEntrada: ${entradaFmt}\nParcelas: ${parcelas}x no ${tipo.toUpperCase()}`);
+
+            // Fechar Caixa de Simulação
+            toggleSimulador(false);
+
+            // Mensagem formatada da Natália com resultado
+            const respostaIA = `
+                📊 <b>RESULTADO DA SUA SIMULAÇÃO - KM-HAKA</b><br><br>
+                • <b>Valor Total Moto:</b> ${totalMotoFmt}<br>
+                • <b>Entrada Informada:</b> <b class="text-emerald-600 dark:text-emerald-400">${entradaFmt}</b><br>
+                • <b>Saldo a Financiar:</b> ${saldoFmt}<br>
+                • <b>Plano Escolhido:</b> ${parcelas}x no ${tipo === 'cartao' ? 'Cartão de Crédito' : 'Boleto'}<br><br>
+                🔥 <b>Fica em: ${parcelas}x de <span class="text-base font-extrabold text-emerald-600 dark:text-emerald-400">${parcelaFmt}</span></b> ${tipo === 'cartao' && parcelas <= 12 ? '(Sem Juros)' : ''}<br><br>
+                ${tipo === 'boleto' ? '<i>*Sujeito à análise de crédito.</i><br>' : ''}
+                📍 <b>Endereço para fechar negócio:</b> Rua José Bonifácio, 364 - Bairro Leblon.<br><br>
+                Clique no botão abaixo para enviar essa simulação diretamente para meu WhatsApp oficial <b>${NUMERO_FORMATADO}</b>!
+                <div class="mt-3">
+                    <a href="https://wa.me/${NUMERO_WHATSAPP}?text=Olá%20Natália,%20fiz%20uma%20simulação%20no%20site%20da%20KMHAKA:%0A- Entrada:%20${encodeURIComponent(entradaFmt)}%0A- Parcelamento:%20${parcelas}x%20de%20${encodeURIComponent(parcelaFmt)}%0A- Modalidade:%20${encodeURIComponent(tipo.toUpperCase())}%0AGostaria%20de%20dar%20andamento!" 
+                       target="_blank" 
+                       class="inline-flex items-center space-x-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-4 py-2 rounded-lg text-xs shadow-md transition w-full justify-center">
+                        <i class="fab fa-whatsapp text-base"></i>
+                        <span>Enviar Simulação no WhatsApp Real</span>
+                    </a>
+                </div>
+            `;
+
+            addIAMessage(respostaIA);
+        }
+
+        // Função utilitária Scroll Chat
+        function scrollToBottom() {
+            const chatMessages = document.getElementById("chatMessages");
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Helper para evitar XSS básico
+        function escapeHtml(text) {
+            return text.replace(/&/g, "&amp;")
+                       .replace(/</g, "&lt;")
+                       .replace(/>/g, "&gt;")
+                       .replace(/"/g, "&quot;")
+                       .replace(/'/g, "&#039;");
+        }
+    </script>
+</body>
+</html>
